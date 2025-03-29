@@ -11,6 +11,7 @@ opcion = st.sidebar.radio("Ir a:", ["Registrar Cliente", "Ver Créditos", "Consu
 
 # Inicialización de base de datos en sesión
 if "data" not in st.session_state:
+    st.session_state.historial_pagos = []
     st.session_state.data = []
 
 def calcular_total(monto, cuotas, interes=0.15):
@@ -93,3 +94,16 @@ elif opcion == "Reportes":
         )
     else:
         st.info("No hay datos registrados aún.")
+
+
+# Historial de Pagos
+elif menu == "📘 Historial de Pagos":
+    st.header("📘 Historial de Pagos Registrados")
+    if st.session_state.historial_pagos:
+        df_historial = pd.DataFrame(st.session_state.historial_pagos)
+        filtro = st.text_input("Buscar por cédula")
+        if filtro:
+            df_historial = df_historial[df_historial["Cédula"].astype(str).str.contains(filtro)]
+        st.dataframe(df_historial)
+    else:
+        st.info("Aún no se han registrado pagos.")
